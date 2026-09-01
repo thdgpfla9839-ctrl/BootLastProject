@@ -1,55 +1,57 @@
 name: Deploy to AWS Server
 on:
- push:
-   branches:
-     - main # main에서 커밋 앤 푸쉬가 됐을 때 => 여러개 일 경우에는 [main,master]
+  push:
+    branches:
+      - main #main commit and push = [main,master]
 jobs:
- build:
-  runs-on: ubuntu-latest
-  steps:
-  # 소스 코드 체크
-  - name: Checkout:repository
-    uses: actions/checkout@v2
-  # JDK 설정
-  - name: Setup JDK 21
-    uses: actions/setup-java@v1
-    with:
-      java-version: '21'
-   # Gradlew 권한 부여   
-  - name: Set Gradlew permission
-    run: |
-     chmod +x ./gradlew
-   # Gradle Build => jar파일 만들어짐
-  - name: Build with GradleW
-    run: ./gradlew clean build -x test
-   # AWS 연결
-  - name: Set SSH key Permission
-    run: |
-      mkdir -p ~/.ssh
-      echo "${{secrets.SERVER_SSH_KEY}}" > ~/.ssh/id_ed25519
-      chmod 600 ~/.ssh/id_ed25519
-   # ADD SSH Key 설정   
-  - name: Add SSH key
-    uses: webfactory/ssh-agent@v0.5.3
-    with:
-      ssh-private-key: ${{secrets.SERVER_SSH_KEY}}
-   # Add Known_hosts
-  - name: Add Known_hosts
-    run: |
-     ssh-keyscan -H ed25519 15.164.221.201 >> ~/.ssh/Known_hosts
-   # Jar파일을 AWS에 전송 => Docker 이미지
-  - name: Deploy to Server with rsync
-    run: |
-      rsync -avz -e "ssh -o StrictHostKeyChecking=no" build/libs/*.jar ubuntu@15.164.221.201:~/app
-   # 9090 포트 kill => container 삭제
-  - name: Run command
-    run: |
-      ssh -i ~/.ssh/id_ed25519 ubuntu@15.164.221.201 << 'EOF'
-        pkill -f 'java -jar' || true
-        cd ~/app &&
-        set -a &&
-        source .env &&
-        set +a &&
-        nohup java -jar ~/app/BootLastProject-0.0.1-SNAPSHOT.jar > log.txt 2>&1 &
-      EOF
-   # 9090 포트 다시 구동 => docker run
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+     #코드 체크 
+     - name: Checkout:repository
+       uses: actions/checkout@v2
+     #JDK 설정 
+     - name: SetUp JDK 21
+       uses: actions/setup-java@v1
+       with:
+         java-version: '21'
+     # Gradlew 권한 부여 
+     - name: Set gradlew permission
+       run: |
+         chmod +x ./gradlew
+     # Gradle Build 
+     - name: Build with Gradlew
+       run: ./gradlew clean build -x test
+     # AWS 연결 
+     - name: Set SSH key Permission
+       run: |
+         mkdir -p ~/.ssh
+         echo "${{secrets.SERVER_SSH_KEY}}" > ~/.ssh/id_ed25519
+         chmod 600 ~/.ssh/id_ed25519
+     # ADD SSH Key 
+     - name: Add SSH Key 
+       uses: webfactory/ssh-agent@v0.5.3
+       with:
+         ssh-private-key: ${{secrets.SERVER_SSH_KEY}}
+     # Add Known_hosts
+     - name: Add Known_hosts
+       run: |
+         ssh-keyscan -H ed25519 15.165.203.225 >> ~/.ssh/known_hosts
+     # Jar파일을 AWS 전송 => Docker이미지 
+     - name: Deploy to Server with rsync 
+       run: |
+         rsync -avz -e "ssh -o StrictHostKeyChecking=no" build/libs/*.jar ubuntu@15.165.203.225:~/app
+     # 9090 포트 Kill => container 삭제 
+     - name: Run command 
+       run: |
+         ssh -i ~/.ssh/id_ed25519 ubuntu@15.165.203.225 << 'EOF'
+           cd ~/app &&
+           set -a &&
+           source .env &&
+           set +a &&
+           nohup java -jar ~/app/BootLastProject-0.0.1-SNAPSHOT.jar > log.txt 2>&1 &
+         EOF
+     # 9090 포트 다시 구동 => docker run
+    
+  
