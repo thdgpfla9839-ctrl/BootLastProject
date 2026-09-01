@@ -44,8 +44,5 @@ jobs:
    # 9090 포트 kill => container 삭제
   - name: Run command
     run: |
-      ssh -i ~/.ssh/id_ed25519 ubuntu@15.164.221.201 << 'EOF'
-        pkill -f 'java -jar' || true
-        nohup java -jar ~/app/BootLastProject-0.0.1-SNAPAHOT.jar > log.txt 2>&1 &
-EOF
+      ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no ubuntu@15.164.221.201 "pkill -f 'java -jar' || true; nohup java -jar ~/app/BootLastProject-0.0.1-SNAPAHOT.jar > log.txt 2>&1 &"
    # 9090 포트 다시 구동 => docker run
