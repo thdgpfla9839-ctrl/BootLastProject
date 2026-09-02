@@ -41,12 +41,13 @@ public class MemberRestController {
 			// 인증된 사용자 정보 가져오기
 			// 시큐리티context에 사용자 정보가 저장돼 있음
 			UserDetails user = (UserDetails)auth.getPrincipal();
-			System.out.println("사용자정보"+user);
+			System.out.println("인증된 사용자 정보");
 			// 사용자 권한 가져오기
 			String role = user.getAuthorities()
 					.iterator()
 					.next()
 					.getAuthority();
+			 System.out.println("사용자 권한:"+role);
 			// JWT 생성 => 토큰 발급
 			String token = provider.createToken(user.getUsername(), role);
 			// JWT 쿠키 생성
