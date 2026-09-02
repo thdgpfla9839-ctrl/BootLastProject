@@ -37,11 +37,11 @@ public class JWTAuthenticationProvider {
 		return Jwts.parserBuilder()
 				.setSigningKey(SECRET.getBytes())
 				.build()
-				.parseClaimsJwt(token)
+				.parseClaimsJws(token)
 				.getBody()
 				.getSubject();
 	}
-	// 위조 방지
+	// 위조 여부 확인
 	public boolean validate(String token)
 	{
 		try
@@ -49,7 +49,7 @@ public class JWTAuthenticationProvider {
 			Jwts.parserBuilder()
 			.setSigningKey(SECRET.getBytes())
 			.build()
-			.parseClaimsJwt(token);
+			.parseClaimsJws(token);
 			
 			return true;
 		} 
