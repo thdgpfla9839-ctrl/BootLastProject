@@ -30,10 +30,21 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
  * 
  */
 import org.springframework.security.web.SecurityFilterChain;
+
+import com.sist.web.security.JWTAuthenticationFilter;
+import com.sist.web.security.JWTAuthenticationProvider;
+import com.sist.web.service.CustomUserDetailsService;
 @Configuration
 @EnableWebSecurity
-public class JWTSecurityConfig {
-
+public class JWTSecurityConfig { 
+	
+    @Bean // 클래스 메모리할당할 때 사용
+    public JWTAuthenticationFilter jwtAuthenticationFilter(
+    		CustomUserDetailsService uds, JWTAuthenticationProvider provider)
+    {
+    	return new JWTAuthenticationFilter(uds,provider);
+    }
+    
 	// 시큐리티 라이브러리 추가됐을 때 메인 접속하자마자 나오는 로그인창 없애기 위해
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http)
