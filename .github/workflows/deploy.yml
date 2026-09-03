@@ -88,8 +88,8 @@ jobs:
        run: |
          ssh ubuntu@43.201.105.73 << 'EOF'
           cd /home/ubuntu/app
-          docker-compose pull
           docker-compose down
+          docker-compose pull
           docker-compose up -d
          EOF
  
