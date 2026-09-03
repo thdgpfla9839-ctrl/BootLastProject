@@ -85,6 +85,6 @@ jobs:
           docker rm last-app || true
           docker pull ${{secrets.DOCKERHUB_USERNAME}}/last-app:latest
           docker run -d --name last-app -p 9090:9090 ${{secrets.DOCKERHUB_USERNAME}}/last-app:latest 
-      EOF
+         EOF
     
    
