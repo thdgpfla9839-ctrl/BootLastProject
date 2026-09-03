@@ -67,7 +67,7 @@ jobs:
     # DB관련 => .env 
      - name: 환경설정
        run: |
-          ssh ubuntu@3.35.11.75 << EOF
+          ssh ubuntu@43.201.105.73 << EOF
            # 기존의 파일 삭제
            mkdir -p ~/app
            cd ~/app
