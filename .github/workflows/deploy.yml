@@ -72,12 +72,15 @@ jobs:
      - name: 환경설정
        run: |
            # 기존 파일 삭제
+           mkdir -p ~/app
+           cd ~/app
            rm -f .env
-           # 새로운 .env 파일 생성
-           touch .env
-           echo "DB_URL=${{secrets.DB_URL}}" >> .env
-           echo "DB_URL=${{secrets.DB_USERNAME}}" >> .env
-           echo "DB_URL=${{secrets.DB_PASSWORD}}" >> .env
+           
+           echo "DB_URL=${{secrets.DB_URL}}" >> ~/app/.env
+           echo "DB_URL=${{secrets.DB_USERNAME}}" >> ~/app/.env
+           echo "DB_URL=${{secrets.DB_PASSWORD}}" >> ~/app/.env
+           chmod 600 ~/app/.env
+          EOF 
            
     # Deploy on server DockerHub Image using
      - name: DockerHub Image using
@@ -86,7 +89,7 @@ jobs:
           docker stop last-app || true
           docker rm last-app || true
           docker pull ${{secrets.DOCKER_USERNAME}}/last-app:latest
-          docker run -d --name last-app --env-file .env -p 9090:9090 ${{secrets.DOCKER_USERNAME}}/last-app:latest 
+          docker run -d --name last-app --env-file ~/app/.env -p 9090:9090 ${{secrets.DOCKER_USERNAME}}/last-app:latest 
          EOF
     
    
