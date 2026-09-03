@@ -63,7 +63,7 @@ jobs:
      # Add Known_hosts
      - name: Add Known_hosts
        run: |
-         ssh-keyscan -H 3.35.11.75 >> ~/.ssh/known_hosts
+         ssh-keyscan -H 43.201.105.73 >> ~/.ssh/known_hosts
     # DB관련 => .env 
      - name: 환경설정
        run: |
@@ -82,7 +82,7 @@ jobs:
      # Deploy on service DockerHub Image using
      - name: DockerHub Image using
        run: |
-         ssh ubuntu@3.35.11.75 << 'EOF'
+         ssh ubuntu@43.201.105.73 << 'EOF'
           docker stop last-app || true
           docker rm last-app || true
           docker pull ${{secrets.DOCKER_USERNAME}}/last-app:latest
