@@ -2,7 +2,7 @@
 services:
   app:
     build: .
-    image: ${DOCKER_USERNAME}/last-app:latest
+    image: thdgpfla5659/last-app:latest
     container_name: last-app
     env_file:
       - ~/app/.env
