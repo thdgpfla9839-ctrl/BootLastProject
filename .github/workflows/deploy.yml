@@ -88,3 +88,4 @@ jobs:
           docker pull ${{secrets.DOCKER_USERNAME}}/last-app:latest
           docker run -d --name last-app --env-file ~/app/.env -p 9090:9090 ${{secrets.DOCKER_USERNAME}}/last-app:latest
          EOF
+ 
