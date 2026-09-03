@@ -11,7 +11,7 @@ jobs:
     # AWS EC2가 아니고 Github Actions 임시로 사용하는 Ubuntu
     runs-on: ubuntu-latest
     #  실행 순서 지정 
-    #  name = stage = step
+    #  name = stage = step 
     steps:
      # 어떤 소스를 가지고 올지 => src / build.grade gradlew Dockerfile
      - name: Checkout:repository
@@ -78,14 +78,18 @@ jobs:
            echo "DB_PASSWORD=${{secrets.DB_PASSWORD}}" >> ~/app/.env
            chmod 600 ~/app/.env
           EOF
+     - name: SCP docker-compose
+       run: |
+         ssh ubuntu@43.201.105.73 "mkdir -p /home/ubuntu/app"
+         scp docker-compose.yml ubuntu@43.201.105.73:/home/ubuntu/app/docker-compose.yml
           
      # Deploy on service DockerHub Image using
      - name: DockerHub Image using
        run: |
          ssh ubuntu@43.201.105.73 << 'EOF'
-          docker stop last-app || true
-          docker rm last-app || true
-          docker pull ${{secrets.DOCKER_USERNAME}}/last-app:latest
-          docker run -d --name last-app --env-file ~/app/.env -p 9090:9090 ${{secrets.DOCKER_USERNAME}}/last-app:latest
+          cd /home/ubuntu/app
+          docker-compose pull
+          docker-compose down
+          docker-compose up -d
          EOF
  
